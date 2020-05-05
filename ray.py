@@ -143,8 +143,8 @@ scene = {
 
 if __name__ == '__main__':
     
-    WIDTH  = 600 
-    HEIGHT = 400
+    WIDTH  = 320 
+    HEIGHT = 200
     camera = Vec3(0, 0, -1)
 
     aspect_ratio = WIDTH/HEIGHT
