@@ -166,25 +166,25 @@ scene = {
             # {'center':Vec3(-0.9, 1 ,2),'radius': 0.2,'color':Vec3(0.3,0.3,1.0)},
 
 
-            {'center':Vec3(-0.6, 0 ,0),'radius': 0.2,'color':Vec3(0.7,0.2,0.7)},
-            {'center':Vec3(0.6, 0 ,0),'radius': 0.3,'color':Vec3(0.3,1,1.0)},
-            {'center':Vec3(0, 0.5 , 0.9),'radius': 0.6,'color':Vec3(0.3,0.3,1.0)},
-            {'center':Vec3(0, 5001 ,0),'radius': 5000,'color':Vec3(0.1,0.8,0.1)},
+            {'center':Vec3(-1.2 ,0    ,0.9),'radius': 0.6,'color':Vec3(0.7,0.2,0.7)},
+            {'center':Vec3(1.2  ,0    ,0.9),'radius': 0.6,'color':Vec3(0.3,1,1.0)},
+            {'center':Vec3(0    ,0.5  ,0.9),'radius': 0.6,'color':Vec3(0.3,0.3,1.0)},
+            {'center':Vec3(0    ,5001 ,0.9),'radius': 5000,'color':Vec3(0.1,0.8,0.1)},
 
             ],
 
         'lights':[
-            # {'type':'ambient','intensity':0.3,'position':Vec3(0,-0.6,0)},
-            {'type':'point','intensity':0.8,'position':Vec3(0,-0.3,1.8)},
-            # {'type':'directional','intensity':0.2,'direction':Vec3(1,4,4)}
+            {'type':'ambient','intensity':0.3,'position':Vec3(0,-0.6,0)},
+            {'type':'point','intensity':0.4,'position':Vec3(0,0.3,1.8)},
+            {'type':'directional','intensity':0.2,'direction':Vec3(1,4,4)}
         ]
     }
 
 
 if __name__ == '__main__':
     
-    WIDTH  =  320
-    HEIGHT = 200
+    WIDTH  =  800
+    HEIGHT = 620
     camera = Vec3(0, 0, -1)
 
     aspect_ratio = WIDTH/HEIGHT
@@ -209,7 +209,7 @@ if __name__ == '__main__':
             
             image.set_pixel(i, j, color)
 
-            print(f'rendering block [{i}] [{j}]', end='\r')
+            print(f'rendering block [{i}] [{j}] ', end='\r')
     image.save('render.ppm')
 
 
