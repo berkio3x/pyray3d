@@ -17,6 +17,7 @@ class P3Image:
         ''' rescale a color range from 0-1 to 0-225 '''
         return Vec3(round(color.x*255), round(color.y*255) , round(color.z*255))
 
+
     def save(self, filename):
         with open(filename, 'w') as f:
 
@@ -46,7 +47,16 @@ class Vec3:
         return Vec3(self.x +  other.x , self.y + other.y , self.z + other.z)
 
     def mag(self):
-        return math.sqrt(self.x**2, self.y**2, self.z**2)
+        return math.sqrt(self.x**2 + self.y**2 + self.z**2)
+
+    def __div__(self, other):
+        return Vec3(self.x/other, self.y/other , self.z/other)
+
+    def __mul__(self, other):
+        return Vec3(self.x*other, self.y*other , self.z*other)     
+
+    def __truediv__(self, other):
+        return Vec3(self.x/other, self.y/other , self.z/other)
 
     def dot(self, other):
         if isinstance(other, Vec3):
@@ -59,9 +69,30 @@ class Vec3:
         raise Exception('this should recieve an arfument of type Vec3') 
 
 
+
+
+def compute_light(P, N):
+    i = 0.0
+    for light in scene['lights']:
+        if light['type'] == 'ambient':
+            i += light['intensity']
+        else:
+            if light['type'] == 'point':
+                L = light['position'] - P
+            if light['type'] == 'directional':
+                L = light['direction']
+
+            n_dot_l = dot(N,L)
+            if n_dot_l > 0:
+                i += light['intensity']*n_dot_l/(N.mag()*L.mag())
+    return i
+
+
 def trace_ray(O, D, t_min, t_max):
     closest_t = math.inf
     closest_sphere = None
+
+
 
     for sphere in scene['spheres']:
         t1, t2 = ray_sphere_intersect(O, D, sphere)
@@ -75,15 +106,24 @@ def trace_ray(O, D, t_min, t_max):
 
             closest_sphere = sphere
 
+
+
     if closest_sphere == None:
-        return Vec3(1,1,1)
+        return Vec3(173/255, 216/255, 230/255)
     else:
-        return closest_sphere['color']
+        P = Vec3(closest_t*D.x , closest_t*D.y, closest_t*D.z)
+        N = P - closest_sphere['center']
+        N = N / N.mag()
+        return closest_sphere['color']*compute_light(P, N)
 
 
 
 def dot(v1, v2):
     return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z
+
+
+
+
 
 def ray_sphere_intersect(O, D, sphere):
     C = sphere['center']
@@ -113,31 +153,31 @@ def c_to_i(x, y):
     xnew = xmin + (xmax - xmin)/Cw
     ynew = ymin + (ymax - ymin)/Ch
     return Vec3(xnew, ynew, d)
-       
+
+
+
 
 
 # define scene with one sphere 
 scene = {
         'spheres':[
-                {
-                'center':Vec3(0, 0 ,0),
-                'radius': 0.3,
-                'color':Vec3(1,0,0)
-                },
-
-                {
-                'center':Vec3(0, 1 ,2),
-                'radius': 0.5,
-                'color':Vec3(0.3,1,1.0)
-                },
-               {
-                'center':Vec3(-0.9, 1 ,2),
-                'radius': 0.2,
-                'color':Vec3(0.3,0.3,1.0)
-                },
+            # {'center':Vec3(0, 0 ,0),'radius': 0.3,'color':Vec3(1,0,0)},
+            # {'center':Vec3(0, 1 ,2),'radius': 0.5,'color':Vec3(0.3,1,1.0)},
+            # {'center':Vec3(-0.9, 1 ,2),'radius': 0.2,'color':Vec3(0.3,0.3,1.0)},
 
 
-            ]
+            {'center':Vec3(-1, 0 ,0),'radius': 0.4,'color':Vec3(1,0,0)},
+            {'center':Vec3(1, 0 ,0),'radius': 0.4,'color':Vec3(0.3,1,1.0)},
+            {'center':Vec3(0, 0.5 , 0.9),'radius': 0.6,'color':Vec3(0.3,0.3,1.0)},
+            {'center':Vec3(0, 5001 ,0),'radius': 5000,'color':Vec3(0.1,0.8,0.1)},
+
+            ],
+
+        'lights':[
+            {'type':'ambient','intensity':0.3,'position':Vec3(0,-0.6,0)},
+            {'type':'point','intensity':0.6,'position':Vec3(0,-0.2,0)},
+            {'type':'directional','intensity':0.2,'direction':Vec3(1,4,4)}
+        ]
     }
 
 
@@ -168,6 +208,7 @@ if __name__ == '__main__':
             color = trace_ray(camera, ray, -1, math.inf)
             
             image.set_pixel(i, j, color)
+
             print(f'rendering block [{i}] [{j}]', end='\r')
     image.save('render.ppm')
 
