@@ -143,7 +143,7 @@ scene = {
 
 if __name__ == '__main__':
     
-    WIDTH  = 320 
+    WIDTH  = 320
     HEIGHT = 200
     camera = Vec3(0, 0, -1)
 
@@ -168,7 +168,7 @@ if __name__ == '__main__':
             color = trace_ray(camera, ray, -1, math.inf)
             
             image.set_pixel(i, j, color)
-
+            print(f'rendering block [{i}] [{j}]', end='\r')
     image.save('render.ppm')
 
 
