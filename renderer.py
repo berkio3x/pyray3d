@@ -43,7 +43,7 @@ class Renderer:
             return closest_sphere.color
 
 
-    def render(self):
+    def render(self, mode):
         print(self)
         camera = self.world.camera
         '''calculate the aspect ratio to avoid squashing of objects bewteen world coordinates & image coordinates'''
@@ -71,6 +71,6 @@ class Renderer:
                     color = self.trace_ray(camera.origin, ray, -1, math.inf)
                     
                     self.image.set_pixel(i, j, color)
-                    print(i, j, color)
-                    #print(f'rendering block [{i}] [{j}] - [{"{:3.0f}%".format(float(j) / float(self.IMAGE_HEIGHT) * 100)}] ', end='\r')
-        self.image.save('newrender.ppm')
+                    if mode=='stream':
+                        yield (i, j, color)
+

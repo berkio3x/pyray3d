@@ -1,25 +1,23 @@
 from tkinter import Canvas, PhotoImage, mainloop
 import tkinter as tk
 from math import sin
-
-WIDTH, HEIGHT = 640, 480
-
-window = tk.Tk()
-canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#ffffff")
-canvas.pack()
-img = PhotoImage('render.ppm')
-canvas.create_image((WIDTH/2, HEIGHT/2), image=img, state="normal")
-
+from multiprocessing import  process
 
 # from PIL import Image
 # im = Image.open("render.ppm")
 # im.show()
 
+def start_snadbox(img):
+	WIDTH, HEIGHT = 640, 480
 
-for y in range(300):
-    for x in range(200):
-	    # y = int(HEIGHT/2 + HEIGHT/4 * sin(x/80.0))
-	    img.put('red', (x,y))
+	window = tk.Tk()
+	canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#ffffff")
+	canvas.pack()
+	canvas.create_image((WIDTH / 2, HEIGHT / 2), image=img, state="normal")
 
+	mainloop()
 
-mainloop()
+def set_pixel(x,y,color):
+	img = PhotoImage()
+	img.put('red', (x, y))
+	return img
