@@ -15,22 +15,25 @@ class Renderer:
     def dot(self, v1, v2):
         return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z
 
-    def compute_light(self,Point, Normal, ViewVector):
-        i = 0.6
+    def compute_light(self, Point, Normal):
+        i = 0.0
         P = Point
         N = Normal
-        V = ViewVector
+
         for light in self.world.lights:
             if light.type == 'ambient':
                 i += light.intensity
             else:
                 if light.type == 'point':
                     L = light.position - P
+                    print(f'L is {L}')
                 if light.type == 'directional':
                     L = light.direction
 
                 n_dot_l = self.dot(N, L)
+
                 if n_dot_l > 0:
+                    print(f'light intensity {light.intensity}')
                     i += light.intensity * n_dot_l / (N.mag() * L.mag())
 
                 # # specularity calculation
@@ -69,10 +72,12 @@ class Renderer:
         if closest_sphere == None:
             return Vec3(173/255, 216/255, 230/255)
         else:
-            P = Vec3(closest_t*camera.x , closest_t*camera.y, closest_t*camera.z)
+            P = Vec3(closest_t*ray.direction.x , closest_t*ray.direction.y, closest_t*ray.direction.z)
             N = P - closest_sphere.center
             N = N / N.mag()
-            return closest_sphere.color*self.compute_light(P, N, -1*ray.direction)
+            light = self.compute_light(P, N)
+            print(light)
+            return closest_sphere.color*light
 
 
 
@@ -103,7 +108,6 @@ class Renderer:
                     color = self.trace_ray(camera.origin, ray, -1, math.inf)
 
                     self.image.set_pixel(i, j, color)
-                    print(i,j,color)
                     if mode=='stream':
                         yield (i, j, color)
         if mode != 'stream':

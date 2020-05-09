@@ -10,7 +10,7 @@ import multiprocessing
 
 from tkinter import Canvas, PhotoImage, mainloop
 import tkinter as tk
-from light import  PointLight
+from light import  PointLight, AmbientLight, DirectionalLight
 import os
 import threading
 import time
@@ -30,7 +30,7 @@ def start_sandbox(queue):
         if pixels == 'DONE':
             endt = time.time()
             elapsed = endt - startt
-            w.config(text=elapsed)
+            w.config(text=f'{elapsed} sec.')
         else:
             # print(pixels)
             for pixel in pixels:
@@ -54,8 +54,8 @@ def start_sandbox(queue):
     window.style = Style()
     window.style.theme_use("classic")
 
-    render_button = tk.Button(window, text="▶️", command=render)
-    render_button.pack()
+    # render_button = tk.Button(window, text="▶️", command=render)
+    # render_button.pack()
 
     canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#ffffff")
     canvas.pack()
@@ -68,14 +68,17 @@ queue = multiprocessing.Queue()
 
 demo_world = World(width=320, height=200)
 
-sphere_1 = Sphere(center=Vec3(0, 0, 1), radius=0.4, color = Vec3(1,0,0))
-sphere_2 = Sphere(center=Vec3(0.3, 0.2, 1), radius=0.3, color = Vec3(1,1,0))
+sphere_1 = Sphere(center=Vec3(0, -0.2, -2), radius=0.3, color = Vec3(1,0,0))
+sphere_2 = Sphere(center=Vec3(0.3, 0.2, -2), radius=0.2, color = Vec3(1,1,0))
 
-point_light_1 = PointLight(type='point', position=Vec3(0,0.9,0), intensity=0.6)
+light_1 = PointLight(type='point', position=Vec3(0,-0.5,1.9), intensity=0.8)
+# light_2 = AmbientLight(type='point', position=Vec3(-1,1,0), intensity=0.6)
 
 demo_world.add_object(sphere_1)
 demo_world.add_object(sphere_2)
-demo_world.add_light(point_light_1)
+demo_world.add_light(light_1)
+# demo_world.add_light(light_2)
+
 
 camera = Camera(Vec3(0, 0, -1))
 demo_world.add_camera(camera)
