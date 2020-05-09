@@ -11,6 +11,8 @@ def start_snadbox(img):
 	WIDTH, HEIGHT = 640, 480
 
 	window = tk.Tk()
+	render_button = tk.Button(window, text="dd")
+	render_button.pack()
 	canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#ffffff")
 	canvas.pack()
 	canvas.create_image((WIDTH / 2, HEIGHT / 2), image=img, state="normal")

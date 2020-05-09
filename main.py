@@ -10,10 +10,15 @@ import multiprocessing
 
 from tkinter import Canvas, PhotoImage, mainloop
 import tkinter as tk
-
+from light import  PointLight
 import os
 import threading
 import time
+from tkinter.ttk import  Style
+
+
+
+
 
 def start_sandbox(queue):
 
@@ -29,14 +34,16 @@ def start_sandbox(queue):
         else:
             # print(pixels)
             for pixel in pixels:
-                print(f'getting pixel yo {pixel}')
+                # print(f'getting pixel yo {pixel}')
                 # cc=rgb2hex(pixel[2].x, pixel[2].y, pixel[2].z)
                 # print(pixel[2].x)
-                img.put(matplotlib.colors.to_hex([
+                color =  matplotlib.colors.to_hex([
                     pixel[2].x,
                     pixel[2].y,
                     pixel[2].z
-                ]), (pixel[0], pixel[1]))
+                ])
+
+                img.put(color, (pixel[0], pixel[1]))
             window.after(1, set_pixel)
 
     WIDTH, HEIGHT = 640, 480
@@ -44,6 +51,11 @@ def start_sandbox(queue):
     img = PhotoImage()
     w = tk.Label(window, text="Time elasped: ")
     w.pack()
+    window.style = Style()
+    window.style.theme_use("classic")
+
+    render_button = tk.Button(window, text="▶️", command=render)
+    render_button.pack()
 
     canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#ffffff")
     canvas.pack()
@@ -54,33 +66,44 @@ def start_sandbox(queue):
 
 queue = multiprocessing.Queue()
 
-demo_world = World(width=600, height=450)
+demo_world = World(width=320, height=200)
 
 sphere_1 = Sphere(center=Vec3(0, 0, 1), radius=0.4, color = Vec3(1,0,0))
 sphere_2 = Sphere(center=Vec3(0.3, 0.2, 1), radius=0.3, color = Vec3(1,1,0))
 
+point_light_1 = PointLight(type='point', position=Vec3(0,0.9,0), intensity=0.6)
+
 demo_world.add_object(sphere_1)
 demo_world.add_object(sphere_2)
+demo_world.add_light(point_light_1)
 
 camera = Camera(Vec3(0, 0, -1))
 demo_world.add_camera(camera)
 
 
-if __name__ == '__main__':
-    p = multiprocessing.Process(target=start_sandbox, args=(queue,))
-    p.start()
-    bucket  = []
+def render():
+
     # we are done at this point, Render !! :)
-    for pixel in Renderer(demo_world).render(mode='stream'):
-        if len(bucket) < 1000:
-            bucket.append((pixel))
-            # print(bucket)
-        else:
+    _render = Renderer(demo_world).render(mode='stream')
+
+
+    bucket = []
+    for pixel in _render:
+        bucket.append(pixel)
+        if len(bucket) == 1000:
             queue.put(bucket)
             bucket = []
 
-
-        #print(pixel)
-
     queue.put('DONE')
+
+def render_to_image():
+    Renderer(demo_world).render(mode='stream')
+
+
+if __name__ == '__main__':
+    p = multiprocessing.Process(target=start_sandbox, args=(queue,))
+    p.start()
+    render()
     p.join()
+
+    # render_to_image()
