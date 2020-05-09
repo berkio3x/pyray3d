@@ -87,6 +87,7 @@ sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,0,1))
 
 light_1 = PointLight(type='point', position=Vec3(0,0,0), intensity=0.4)
 light_2 = AmbientLight(type='ambient', position=Vec3(0,-0.6,0.5), intensity=0.3)
+# light_2 = DirectionalLight(type='directional', direction=Vec3(0,-0.6,0.5), intensity=0.3)
 
 demo_world.add_object(sphere_1)
 demo_world.add_object(sphere_2)
