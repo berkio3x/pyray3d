@@ -83,7 +83,7 @@ demo_world = World(width=800, height=620)
 
 sphere_1 = Sphere(center=Vec3(-1, -0.5, 5), radius=1.7, color = Vec3(1,0,0))
 sphere_2 = Sphere(center=Vec3(2, -0.7, 5), radius=1.7, color = Vec3(1,1,0))
-sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,1,1))
+sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,0,0.6))
 
 light_1 = PointLight(type='point', position=Vec3(0,0,0), intensity=0.4)
 light_2 = AmbientLight(type='ambient', position=Vec3(0,-0.6,0.5), intensity=0.3)
