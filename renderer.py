@@ -91,8 +91,12 @@ class Renderer:
         xmax = 1
 
         ''' use the aspect ratio to correcly find the Y coordinate range in our world coordinate system'''
-        ymax = 1 / aspect_ratio
-        ymin = -1 * ymax
+        # ymax = 1 / aspect_ratio
+        # ymin = -1 * ymax
+
+
+        ymax =  1 / aspect_ratio
+        ymin = -1*ymax
 
         xstep = (xmax - xmin) / (self.IMAGE_WIDTH - 1)
         ystep = (ymax - ymin) / (self.IMAGE_HEIGHT - 1)
@@ -104,7 +108,7 @@ class Renderer:
                 for i in range(self.IMAGE_WIDTH):
                     x  = xmin + i*xstep
 
-                    ray = Ray(origin=camera ,direction=Vec3(x,y,0) - camera.origin)
+                    ray = Ray(origin=camera , direction=Vec3(x,y,0) - camera.origin)
                     color = self.trace_ray(camera.origin, ray, -1, math.inf)
 
                     self.image.set_pixel(i, j, color)

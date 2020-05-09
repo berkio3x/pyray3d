@@ -66,10 +66,10 @@ def start_sandbox(queue):
 
 queue = multiprocessing.Queue()
 
-demo_world = World(width=320, height=200)
+demo_world = World(width=800, height=320)
 
-sphere_1 = Sphere(center=Vec3(0, -0.2, -2), radius=0.3, color = Vec3(1,0,0))
-sphere_2 = Sphere(center=Vec3(0.3, 0.2, -2), radius=0.2, color = Vec3(1,1,0))
+sphere_1 = Sphere(center=Vec3(0, 0.3, -2), radius=0.3, color = Vec3(1,0,0))
+sphere_2 = Sphere(center=Vec3(0.3, -0.2, -2), radius=0.1, color = Vec3(1,1,0))
 
 light_1 = PointLight(type='point', position=Vec3(0,-0.5,1.9), intensity=0.8)
 # light_2 = AmbientLight(type='point', position=Vec3(-1,1,0), intensity=0.6)
