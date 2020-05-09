@@ -1,3 +1,7 @@
+#!python3
+#cython: language_level=3
+
+
 from world import World
 from primitive import Sphere
 from renderer import Renderer
@@ -46,19 +50,28 @@ def start_sandbox(queue):
                 img.put(color, (pixel[0], pixel[1]))
             window.after(1, set_pixel)
 
-    WIDTH, HEIGHT = 640, 480
+    WIDTH, HEIGHT = 850, 480
     window = tk.Tk()
+
+
+
+    frame_create_objects = tk.Frame(window,background="red")
+    frame_render_window = tk.Frame(window, background="bisque")
+
+    frame_render_window.grid(column=0,columnspan=4)
+    frame_create_objects.grid(column=5, columnspan=2)
+
     img = PhotoImage()
-    w = tk.Label(window, text="Time elasped: ")
+    w = tk.Label(frame_render_window, text="Time elasped: ")
     w.pack()
-    window.style = Style()
-    window.style.theme_use("classic")
 
-    # render_button = tk.Button(window, text="▶️", command=render)
-    # render_button.pack()
 
-    canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#ffffff")
+    render_button = tk.Button(frame_create_objects, text="▶️", command=render)
+    render_button.pack()
+
+    canvas = Canvas(frame_render_window, width=WIDTH, height=HEIGHT, bg="white")
     canvas.pack()
+
     canvas.create_image((WIDTH / 2, HEIGHT / 2), image=img, state="normal")
     startt = time.time()
     window.after(1, set_pixel)
@@ -66,21 +79,26 @@ def start_sandbox(queue):
 
 queue = multiprocessing.Queue()
 
-demo_world = World(width=800, height=320)
+demo_world = World(width=320, height=200)
 
-sphere_1 = Sphere(center=Vec3(0, 0.3, -2), radius=0.3, color = Vec3(1,0,0))
-sphere_2 = Sphere(center=Vec3(0.3, -0.2, -2), radius=0.1, color = Vec3(1,1,0))
+sphere_1 = Sphere(center=Vec3(0, -0.5, 5), radius=1.7, color = Vec3(1,0,0))
+sphere_2 = Sphere(center=Vec3(2, -0.5, 5), radius=1.7, color = Vec3(1,1,0))
+sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,0,1))
 
-light_1 = PointLight(type='point', position=Vec3(0,-0.5,1.9), intensity=0.8)
-# light_2 = AmbientLight(type='point', position=Vec3(-1,1,0), intensity=0.6)
+light_1 = PointLight(type='point', position=Vec3(0,0,0), intensity=0.4)
+light_2 = AmbientLight(type='ambient', position=Vec3(0,-0.6,0.5), intensity=0.3)
 
 demo_world.add_object(sphere_1)
 demo_world.add_object(sphere_2)
+demo_world.add_object(sphere_3)
+
+
+
 demo_world.add_light(light_1)
-# demo_world.add_light(light_2)
+demo_world.add_light(light_2)
 
 
-camera = Camera(Vec3(0, 0, -1))
+camera = Camera(Vec3(0, 0, 0))
 demo_world.add_camera(camera)
 
 

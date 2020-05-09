@@ -16,6 +16,10 @@ class Renderer:
         return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z
 
     def compute_light(self, Point, Normal):
+        '''
+            Given a POint P and the Normal N at the point, calculate the intensity
+            depending upon the light type.
+        '''
         i = 0.0
         P = Point
         N = Normal
@@ -24,26 +28,11 @@ class Renderer:
             if light.type == 'ambient':
                 i += light.intensity
             else:
-                if light.type == 'point':
-                    L = light.position - P
-                    print(f'L is {L}')
-                if light.type == 'directional':
-                    L = light.direction
-
-                n_dot_l = self.dot(N, L)
-
-                if n_dot_l > 0:
-                    print(f'light intensity {light.intensity}')
-                    i += light.intensity * n_dot_l / (N.mag() * L.mag())
-
-                # # specularity calculation
-                # if s != -1:
-                #     R = 2 * N * self.dot(N, L) - L
-                #     r_dot_v = self.dot(R, V)
-                #     if r_dot_v > 0:
-                #         i += light.inte* ((r_dot_v / (R.mag() * V.mag())))
-                #         pass
-
+                # if the light type is either point or directional , their respective objects
+                # know how to calculate the intensity at point P, just pass the Point P and
+                # Normal N at Point P.The only difference is in how the Light vector is calculated
+                # in both these cases.
+                i += light.calculate_intensity(P , N)
         return i
 
     def trace_ray(self, camera, ray, t_min, t_max):
@@ -108,7 +97,7 @@ class Renderer:
                 for i in range(self.IMAGE_WIDTH):
                     x  = xmin + i*xstep
 
-                    ray = Ray(origin=camera , direction=Vec3(x,y,0) - camera.origin)
+                    ray = Ray(origin=camera , direction=Vec3(x,y,1))
                     color = self.trace_ray(camera.origin, ray, -1, math.inf)
 
                     self.image.set_pixel(i, j, color)
