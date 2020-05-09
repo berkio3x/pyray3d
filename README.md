@@ -5,14 +5,15 @@ This is mostly a reaserch project to learn about raytracing.
 
 ![](./render.png)
 
-##### Simulates
+##### Supports
 
-* Point lighting
-* Ambient Lighting
-* Directional lighting
+* 💡 Point lighting
+* ☀️  Ambient Lighting
+* ➡️  Directional lighting
+* 👥 shadows
 
 ##### TODO:
-* shadows
-* Reflection
+
+* ❀|❀ Reflection
 * Diffuse lighting
 
