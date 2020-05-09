@@ -28,12 +28,44 @@ class Renderer:
             if light.type == 'ambient':
                 i += light.intensity
             else:
-                # if the light type is either point or directional , their respective objects
-                # know how to calculate the intensity at point P, just pass the Point P and
-                # Normal N at Point P.The only difference is in how the Light vector is calculated
-                # in both these cases.
-                i += light.calculate_intensity(P , N)
+                if light.type == 'point':
+                    L = light.position - P
+                    t_max = 1
+
+                if light.type == 'directional':
+                    L = light.direction
+                    t_max = math.inf
+
+                # Shadow check
+                shadow_sphere, shadow_t = self.closest_intersection(P, L, 0.001, t_max)
+                if shadow_sphere != None:
+                    continue
+
+                n_dot_l = self.dot(N, L)
+
+                if n_dot_l > 0:
+                    # print(f'light intensity {light.intensity}')
+                    i+= light.intensity * n_dot_l / (N.mag() * L.mag())
+
         return i
+
+    def closest_intersection(self, O, D, t_min, t_max):
+        closest_t = math.inf
+        closest_sphere = None
+        # find the intersection with spheres in our world
+        for sphere in self.world.objects:
+            t1, t2 = sphere.intersect_at_point(O, D)
+
+            if (t_min < t1 < t_max) and t1 < closest_t:
+                closest_t = t1
+                closest_sphere = sphere
+
+            if (t_min < t2 < t_max) and t2 < closest_t:
+                closest_t = t2
+
+                closest_sphere = sphere
+
+        return closest_sphere, closest_t
 
     def trace_ray(self, camera, ray, t_min, t_max):
         ''' Trace the actual ray & return the color of the object if there is some intersection with a geometry.
@@ -43,20 +75,7 @@ class Renderer:
             we assume the tmax is infinity in our case, why? because we want the ray to go infinitely in its direction.
         '''
 
-        closest_t = math.inf
-        closest_sphere = None
-        # find the intersection with spheres in our world
-        for sphere in self.world.objects:
-            t1, t2 = sphere.intersect_at_point(camera, ray)
-
-            if  (t_min < t1 < t_max) and t1 < closest_t:
-                closest_t  = t1
-                closest_sphere = sphere
-
-            if (t_min < t2 < t_max) and t2 < closest_t:
-                closest_t = t2
-
-                closest_sphere = sphere
+        closest_sphere, closest_t = self.closest_intersection(camera, ray.direction, t_min, t_max)
 
         if closest_sphere == None:
             return Vec3(173/255, 216/255, 230/255)

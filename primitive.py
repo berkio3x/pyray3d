@@ -20,7 +20,7 @@ class Sphere:
         C = self.center
         r = self.radius
         O = camera
-        D = ray.direction
+        D = ray
         oc = O - C
         k1 = self.dot(D,D)
         k2 = 2*self.dot(oc, D)

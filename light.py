@@ -26,13 +26,7 @@ class PointLight(Light):
         self.position = position
 
 
-    def calculate_intensity(self, point, normal ):
-        L = self.position - point
-        n_dot_l = self.dot(normal, L)
 
-        if n_dot_l > 0:
-            # print(f'light intensity {light.intensity}')
-            return self.intensity * n_dot_l / (normal.mag() * L.mag())
 
     #
 class AmbientLight(Light):
@@ -47,12 +41,6 @@ class DirectionalLight(Light):
         super().__init__(*args, **kwargs)
         self.direction=direction
 
-    def calculate_intensity(self, point, normal):
-        L = self.direction
-        n_dot_l = self.dot(normal, L)
 
-        if n_dot_l > 0:
-            # print(f'light intensity {light.intensity}')
-            return self.intensity * n_dot_l / (normal.mag() * L.mag())
 
         
