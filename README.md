@@ -20,4 +20,6 @@ This is mostly a reaserch project to learn about raytracing.
 * colored lighting
 * specular reflections
 * Diffuse lighting
-
+* Metal 
+* Glass
+* Refraction
