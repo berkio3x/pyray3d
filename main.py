@@ -7,7 +7,7 @@ from primitive import Sphere
 from renderer import Renderer
 from vector import Vec3
 from ray import Ray
-from sandbox import  start_snadbox, set_pixel
+from sandbox import  make_sphere_object_widget
 from camera import Camera
 import matplotlib
 import multiprocessing
@@ -24,7 +24,7 @@ from tkinter.ttk import  Style
 
 
 
-def start_sandbox(queue):
+def start_sandbox(queue,spheres):
 
     def rgb2hex(r, g, b):
         return "#{:02x}{:02x}{:02x}".format(r, g, b)
@@ -55,11 +55,13 @@ def start_sandbox(queue):
 
 
 
-    frame_create_objects = tk.Frame(window,background="red")
+    frame_create_objects = tk.Frame(window)
     frame_render_window = tk.Frame(window, background="bisque")
 
-    frame_render_window.grid(column=0,columnspan=4)
-    frame_create_objects.grid(column=5, columnspan=2)
+    # frame_render_window.grid(column=0,columnspan=4)
+    # frame_create_objects.grid(column=5, columnspan=2)
+    frame_render_window.pack()
+    frame_create_objects.pack()
 
     img = PhotoImage()
     w = tk.Label(frame_render_window, text="Time elasped: ")
@@ -73,13 +75,19 @@ def start_sandbox(queue):
     canvas.pack()
 
     canvas.create_image((WIDTH / 2, HEIGHT / 2), image=img, state="normal")
+
+
+
+    # widget = make_sphere_object_widget(frame_create_objects, spheres)
+    # widget.pack()
+
     startt = time.time()
     window.after(1, set_pixel)
     window.mainloop()
 
 queue = multiprocessing.Queue()
 
-demo_world = World(width=800, height=600)
+demo_world = World(width=300, height=280)
 
 sphere_1 = Sphere(center=Vec3(-1, -0.5, 5), radius=1, color = Vec3(1,0,0), reflective=0.4)
 sphere_2 = Sphere(center=Vec3(2, -0.7, 5), radius=1, color = Vec3(1,1,0), reflective=0.6)
@@ -137,7 +145,7 @@ def render_to_image():
 
 
 if __name__ == '__main__':
-    p = multiprocessing.Process(target=start_sandbox, args=(queue,))
+    p = multiprocessing.Process(target=start_sandbox, args=(queue,demo_world.objects))
     p.start()
     render()
     p.join()
