@@ -79,18 +79,18 @@ def start_sandbox(queue):
 
 queue = multiprocessing.Queue()
 
-demo_world = World(width=800, height=620)
+demo_world = World(width=800, height=600)
 
-sphere_1 = Sphere(center=Vec3(-1, -0.5, 5), radius=1.7, color = Vec3(1,0,0))
-sphere_2 = Sphere(center=Vec3(2, -0.7, 5), radius=1.7, color = Vec3(1,1,0))
-sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,0,0.6))
+sphere_1 = Sphere(center=Vec3(-1, -0.5, 5), radius=1, color = Vec3(1,0,0), reflective=0.4)
+sphere_2 = Sphere(center=Vec3(2, -0.7, 5), radius=1, color = Vec3(1,1,0), reflective=0.6)
+sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,1,1))
 
 light_1 = PointLight(type='point', position=Vec3(0,0,0), intensity=0.4)
 light_2 = AmbientLight(type='ambient', position=Vec3(0,-0.6,0.5), intensity=0.3)
 light_3 = DirectionalLight(type='directional', direction=Vec3(0,-0.6,0.5), intensity=0.3)
 #
-# demo_world.add_object(sphere_1)
-# demo_world.add_object(sphere_2)
+demo_world.add_object(sphere_1)
+demo_world.add_object(sphere_2)
 demo_world.add_object(sphere_3)
 ## generate 5 random sphers
 for i in range(10):
@@ -104,7 +104,8 @@ for i in range(10):
             random.uniform(0.0,1.0),
             random.uniform(0.0,1.0),
             random.uniform(0.0,1.0),
-        ))
+        ),
+    reflective=random.uniform(0.0,0.0))
     demo_world.add_object(s)
 
 demo_world.add_light(light_1)

@@ -2,10 +2,11 @@ import math
 
 class Sphere:
     
-    def __init__(self, center, radius, color):
+    def __init__(self, center, radius, color, reflective=0.0):
         self.center = center
         self.radius = radius
         self.color = color
+        self.reflective = reflective
    
 
     def dot(self, v1, v2):

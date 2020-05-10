@@ -15,6 +15,9 @@ class Renderer:
     def dot(self, v1, v2):
         return v1.x* v2.x + v1.y * v2.y + v1.z * v2.z
 
+    def reflect_ray(self, R, N):
+        return 2*N*self.dot(N, R) - R
+
     def compute_light(self, Point, Normal):
         '''
             Given a POint P and the Normal N at the point, calculate the intensity
@@ -67,25 +70,48 @@ class Renderer:
 
         return closest_sphere, closest_t
 
-    def trace_ray(self, camera, ray, t_min, t_max):
+    def trace_ray(self, origin, direction, t_min, t_max, depth):
         ''' Trace the actual ray & return the color of the object if there is some intersection with a geometry.
             Since a ray is represented by the parametric equation:
             P = O +t*D ,
             where Point P on ray / half line is defined by the parameter t and the Direction D,
             we assume the tmax is infinity in our case, why? because we want the ray to go infinitely in its direction.
         '''
+        # input(f'{ray.direction}')
 
-        closest_sphere, closest_t = self.closest_intersection(camera, ray.direction, t_min, t_max)
+
+
+        closest_sphere, closest_t = self.closest_intersection(origin, direction, t_min, t_max)
 
         if closest_sphere == None:
             return Vec3(173/255, 216/255, 230/255)
-        else:
-            P = Vec3(closest_t*ray.direction.x , closest_t*ray.direction.y, closest_t*ray.direction.z)
-            N = P - closest_sphere.center
-            N = N / N.mag()
-            light = self.compute_light(P, N)
-            print(light)
-            return closest_sphere.color*light
+
+        # Compute local color
+        P = origin + closest_t * direction  # Compute intersection
+        N = P - closest_sphere.center  # Compute sphere normal at intersection
+        N = N / N.mag()
+        local_color = closest_sphere.color * self.compute_light(P, N)
+
+        # If we hit the recursion limit or the object is not reflective, we're done
+        r = closest_sphere.reflective
+        if depth <= 0 or r <= 0:
+            return local_color
+
+        # Compute the reflected color
+        R = self.reflect_ray(-1*direction, N)
+        reflected_color = self.trace_ray(P, R, 0.001, math.inf, depth - 1)
+
+        return local_color * (1 - r) + reflected_color * r
+
+        # if closest_sphere == None:
+        #     return Vec3(173/255, 216/255, 230/255)
+        # else:
+        #     P = Vec3(closest_t*ray.direction.x , closest_t*ray.direction.y, closest_t*ray.direction.z)
+        #     N = P - closest_sphere.center
+        #     N = N / N.mag()
+        #     light = self.compute_light(P, N)
+        #     print(light)
+        #     return closest_sphere.color*light
 
 
 
@@ -117,7 +143,7 @@ class Renderer:
                     x  = xmin + i*xstep
 
                     ray = Ray(origin=camera , direction=Vec3(x,y,1))
-                    color = self.trace_ray(camera.origin, ray, -1, math.inf)
+                    color = self.trace_ray(camera.origin, ray.direction, -1, math.inf, 3)
 
                     self.image.set_pixel(i, j, color)
                     if mode=='stream':
