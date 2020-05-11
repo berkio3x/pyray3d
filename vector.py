@@ -28,6 +28,8 @@ class Vec3:
     def __mul__(self, other):
         return Vec3(self.x*other, self.y*other , self.z*other)     
 
+    def __neg__(self,other):
+        return Vec3(-1*self.x, -1*self.y, -1*self.z)
 
     def __truediv__(self, other):
         return Vec3(self.x/other, self.y/other , self.z/other)
@@ -41,4 +43,3 @@ class Vec3:
         if isinstance(other, Vec3):
             return Vec3( self.y* other.z - self.x* other.y, self.z* other.x - self.x* other.z , self.x * self.y - self.y * self.x)
         raise Exception('this should recieve an arfument of type Vec3') 
-

@@ -3,7 +3,6 @@
 
 import random
 from world import World
-from primitive import Sphere
 from renderer import Renderer
 from vector import Vec3
 from ray import Ray
@@ -19,7 +18,7 @@ import os
 import threading
 import time
 from tkinter.ttk import  Style
-
+from geometry import Sphere
 
 
 
