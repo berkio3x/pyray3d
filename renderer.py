@@ -54,21 +54,43 @@ class Renderer:
 
     def closest_intersection(self, O, D, t_min, t_max):
         closest_t = math.inf
-        closest_sphere = None
-        # find the intersection with spheres in our world
-        for sphere in self.world.objects:
-            t1, t2 = sphere.intersect_at_point(O, D)
+        closest_object = None
+
+        for object in self.world.objects:
+            t1, t2 = object.intersect_at_point(O, D)
 
             if (t_min < t1 < t_max) and t1 < closest_t:
                 closest_t = t1
-                closest_sphere = sphere
+                closest_object = object
 
             if (t_min < t2 < t_max) and t2 < closest_t:
                 closest_t = t2
+                closest_object = object
 
-                closest_sphere = sphere
+        for plane in self.world.planes:
 
-        return closest_sphere, closest_t
+            t = plane.intersect_at_point(O,D)
+            if(t_min < t < t_max) and t < closest_t:
+                closest_t = t
+                closest_object = plane
+
+        return closest_object, closest_t
+
+
+        # find the intersection with spheres in our world
+        # for sphere in self.world.objects + self.planes:
+        #     t1, t2 = sphere.intersect_at_point(O, D)
+        #
+        #     if (t_min < t1 < t_max) and t1 < closest_t:
+        #         closest_t = t1
+        #         closest_sphere = sphere
+        #
+        #     if (t_min < t2 < t_max) and t2 < closest_t:
+        #         closest_t = t2
+        #
+        #         closest_sphere = sphere
+        #
+        # return closest_sphere, closest_t
 
     def trace_ray(self, origin, direction, t_min, t_max, depth):
         ''' Trace the actual ray & return the color of the object if there is some intersection with a geometry.
@@ -81,19 +103,19 @@ class Renderer:
 
 
 
-        closest_sphere, closest_t = self.closest_intersection(origin, direction, t_min, t_max)
+        closest_object, closest_t = self.closest_intersection(origin, direction, t_min, t_max)
 
-        if closest_sphere == None:
+        if closest_object == None:
             return Vec3(173/255, 216/255, 230/255)
 
         # Compute local color
         P = origin + closest_t * direction  # Compute intersection
-        N = P - closest_sphere.center  # Compute sphere normal at intersection
+        N = P - closest_object.center  # Compute  normal at intersection
         N = N / N.mag()
-        local_color = closest_sphere.color * self.compute_light(P, N)
+        local_color = closest_object.color * self.compute_light(P, N)
 
         # If we hit the recursion limit or the object is not reflective, we're done
-        r = closest_sphere.reflective
+        r = closest_object.reflective
         if depth <= 0 or r <= 0:
             return local_color
 
@@ -143,7 +165,7 @@ class Renderer:
                     x  = xmin + i*xstep
 
                     ray = Ray(origin=camera , direction=Vec3(x,y,1))
-                    color = self.trace_ray(camera.origin, ray.direction, -1, math.inf, 3)
+                    color = self.trace_ray(camera.origin, ray.direction, -1, math.inf, 2)
 
                     self.image.set_pixel(i, j, color)
                     if mode=='stream':

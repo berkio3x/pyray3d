@@ -19,7 +19,7 @@ import threading
 import time
 from tkinter.ttk import  Style
 from geometry import Sphere
-
+from geometry import  Plane
 
 
 
@@ -86,24 +86,29 @@ def start_sandbox(queue,spheres):
 
 queue = multiprocessing.Queue()
 
-demo_world = World(width=300, height=280)
+demo_world = World(width=320, height=200)
 
-sphere_1 = Sphere(center=Vec3(-1, -0.5, 5), radius=1, color = Vec3(1,0,0), reflective=0.4)
-sphere_2 = Sphere(center=Vec3(2, -0.7, 5), radius=1, color = Vec3(1,1,0), reflective=0.6)
+sphere_1 = Sphere(center=Vec3(-1, -0.7, 5), radius=0.7, color = Vec3(1,0,0), reflective=0.6)
+sphere_2 = Sphere(center=Vec3(2, -0.2, 5), radius=1, color = Vec3(1,1,0), reflective=0.5)
 sphere_3 = Sphere(center=Vec3(0, 5001, 3), radius=5000, color = Vec3(1,1,1))
 
-light_1 = PointLight(type='point', position=Vec3(0,0,0), intensity=0.4)
-light_2 = AmbientLight(type='ambient', position=Vec3(0,-0.6,0.5), intensity=0.3)
-light_3 = DirectionalLight(type='directional', direction=Vec3(0,-0.6,0.5), intensity=0.3)
-#
+light_1 = PointLight(type='point', position=Vec3(0,-3,3), intensity=0.4)
+light_2 = AmbientLight(type='ambient', position=Vec3(0,-3,0.5), intensity=0.3)
+light_3 = DirectionalLight(type='directional', direction=Vec3(0,-3,0.5), intensity=0.3)
+
+
+plane_1 = Plane(y=1, color=Vec3(0.7,0.6,0.8))
+
 demo_world.add_object(sphere_1)
 demo_world.add_object(sphere_2)
-demo_world.add_object(sphere_3)
+# demo_world.add_object(sphere_3)
+demo_world.add_plane(plane_1)
+
 ## generate 5 random sphers
 for i in range(10):
     s = Sphere(center=Vec3(
         random.uniform(-4.0,4.0),
-        0.6,
+        0.2,
         random.uniform(1.0, 6.0),
     ),
         radius=random.uniform(0.2,0.4),
