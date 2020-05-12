@@ -1,5 +1,5 @@
 # pyray3d
-An implementation of a 3D raytracer in python.
+An implementation of a 3D raytracing engine in python.
 
 This is a reaserch project to implement a raytracer. 
 
