@@ -1,9 +1,9 @@
 # pyray3d
-An implementation of a 3D raytracing engine in python.
+An implementation of a 3D raytracing in python.  
 
 This is a reaserch project to implement a raytracer. 
 
-**Time to render below scene -  `57` sec.** pretty decent as there is no optmizations attempted in this python code. Once I am happy with features, i will optmize the code & pretty sure this can be brought down by using `numpy` & doing the heav lifting in `Cython`.
+**Time to render below scene -  `57` sec.** .There is no optmizations attempted in this python code. Once I am happy with features, i will optmize the code & pretty sure this can be brought down by using `numpy` & doing the heav lifting in `Cython`.
 
 
 ![](./render.png)
